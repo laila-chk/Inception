@@ -1,17 +1,13 @@
 FROM alpine:3.16.4
 
 
-#install nginx:
 RUN apk update; \
-      apk add openrc nginx openssl; \
-      openrc ; \
-      touch /run/openrc/softlevel; \
-      echo 'rc_provide="loopback net"' >> /etc/rc.conf ; \
+      apk add nginx openssl; \
       mkdir -p /etc/nginx/ssl ;
 
 EXPOSE 8080
 
-COPY ./conf/nginx.conf /etc/nginx/nginx.conf
+COPY ./conf/default.conf /etc/nginx/http.d/default.conf
 
 COPY . .
 

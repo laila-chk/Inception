@@ -1,4 +1,3 @@
-
 version: '2.2'
 
 services: 
@@ -7,6 +6,7 @@ services:
       context:  ./requirements/nginx/
       dockerfile: Dockerfile
     image: nginx
+    container_name: nginx
     ports:
       - 80:80
   mariadb :
@@ -14,9 +14,11 @@ services:
       context:  requirements/mariadb
       dockerfile: Dockerfile
     image : mariadb
+    container_name: mariadb
   wordpress :
     build:
       context:  requirements/wordpress
       dockerfile: Dockerfile
     image : wordpress
+    container_name: wordpress 
 
