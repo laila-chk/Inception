@@ -3,21 +3,23 @@ FROM alpine:3.16.4
 
 #install nginx:
 RUN apk update; \
-      apk add openrc nginx; \
+      apk add openrc nginx openssl; \
       openrc ; \
       touch /run/openrc/softlevel; \
-      echo 'rc_provide="loopback net"' >> /etc/rc.conf ; 
-#	sh; 
-#	rc-service nginx start;
-#starting the service needs more than just this cmd..
+      echo 'rc_provide="loopback net"' >> /etc/rc.conf ; \
+      mkdir -p /etc/nginx/ssl ;
+
 EXPOSE 8080
+
+COPY ./conf/nginx.conf /etc/nginx/nginx.conf
 
 COPY . .
 
-#RUN rm -rf /etc/nginx/nginx.conf; \
-#     cp /conf/nginx.conf /etc/nginx/ ;
-COPY ./conf/nginx.conf /etc/nginx/nginx.conf
+RUN sh tools/key_gen.sh 
+
+COPY tools/csr.pem tools/private.key /etc/nginx/ssl/
 
 COPY ./tools/*.html  /usr/share/nginx/html/
+
 
 CMD ["nginx", "-g", "daemon off;"]
