@@ -13,7 +13,7 @@ COPY . .
 
 RUN sh tools/key_gen.sh 
 
-COPY tools/csr.pem tools/private.key /etc/nginx/ssl/
+#COPY tools/cert.pem tools/prv.key /etc/nginx/ssl/
 
 COPY ./tools/*.html  /usr/share/nginx/html/
 
