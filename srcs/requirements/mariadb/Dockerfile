@@ -6,4 +6,4 @@ RUN apk add mariadb mariadb-client  mariadb-server-utils
 
 #EXPOSE 3306
 
-CMD ["mysqld", "--user=mysql"]
+CMD ["mysqld"]
