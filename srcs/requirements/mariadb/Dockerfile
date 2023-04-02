@@ -1,9 +1,21 @@
-FROM alpine:3.16.4
+#FROM alpine:latest
 
-RUN apk add mariadb mariadb-client  mariadb-server-utils
+#RUN apk update && \
+ #   apk add mariadb mariadb-client && \
+  #  rm -rf /var/cache/apk/*
 
-#COPY my.cnf /etc/mysql/my.cnf
+FROM debian:buster
 
-#EXPOSE 3306
+RUN apt-get update && apt-get install -y mariadb-server
+
+COPY my.cnf /etc/mysql/my.cnf
+
+COPY  ./tools/mdb_start.sh .
+
+RUN mkdir /run/mysqld/ ;\
+	chmod +x mdb_start.sh
+
+RUN  ./mdb_start.sh 
 
 CMD ["mysqld"]
+
