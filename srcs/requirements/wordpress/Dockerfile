@@ -1,30 +1,24 @@
-FROM alpine:3.16.4
+FROM debian:buster
 
 #php installation:
-RUN apk update ; \
-      apk add php php-fpm php-phar php-curl curl; 
-
+RUN apt-get update; apt-get install -y php7.3 \
+	php7.3-fpm php7.3-mysql mariadb-client nginx curl
 
 #getting wp-cli to have more control over wp through commands
 RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar; \
-       php --version; \
      chmod +x wp-cli.phar ; \
      mv wp-cli.phar /usr/local/bin/wp; \
-     mkdir -p /var/www/html/wordpress ;
-#mkdir to delete later !!!     
+	 mkdir -p /var/www/html/wordpress;
 
 #Downloading and installing aand configuring Wp using wp-cli
-Run wp core download --path=/var/www/html/wordpress; \
-    wp config create --dbname=${MYSQL_DATABASE}  --dbuser=${MYSQL_USER} --dbpass=${MYSQL_PASSWORD} --dbhost=mariadb ;\
-    wp core install  --title=inception --admin_user=${WW_USER} wpcli --admin_password=${WP_PW}  --admin_email=${WP_EMAIL};
 
+COPY tools/* .
 
-CMD ["php-fpm", "-R", "-F"]
+RUN chmod +x wp-cli_install.sh
 
-#RUN mkdir -p /usr/share/wp/; 
-#    wget -P /usr/share/wp/ http://wordpress.org/latest.tar.gz; \
-#    tar -xzvf /usr/share/wp/latest.tar.gz -C /usr/share/wp; \
-#    rm /usr/share/wp/latest.tar.gz; \
-#    chmod 777 /usr/share/wp; 
-#we probably should edit config file here with database
-#COPY . .
+RUN mkdir /run/php/
+
+ENTRYPOINT ["sh", "wp-cli_install.sh"]
+
+CMD ["php-fpm7.3", "-R", "-F"]
+
