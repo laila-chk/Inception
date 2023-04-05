@@ -1,29 +1,13 @@
-version: '2.2'
+version: '3'
 
 services: 
-
-  nginx:
-    build:
-      context:  ./requirements/nginx/
-      dockerfile: Dockerfile
-    image: nginx
-    container_name: nginx
-    networks:
-        - wordpress
-    ports:
-      - 80:80
-    volumes:
-      - wordpress:/var/www/html/wordpress.
-    restart: always
-    init : true
-    
   mariadb :
     build: ./requirements/mariadb
     image : mariadb
     container_name: mariadb
     restart: always
     volumes:
-        - wordpress:/var/www/html/wordpress.
+        - wordpress:/var/www/html/wordpress
     env_file:
         - .env
     networks:
@@ -31,10 +15,8 @@ services:
     environment:
         - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
         - MYSQL_DATABASE=${MYSQL_DATABASE}
-          MYSQL_USER=${MYSQL_USER}
         - MYSQL_PASSWORD=${MYSQL_PASSWORD}
     init : true
-
 
   wordpress:
     build:
@@ -42,7 +24,7 @@ services:
     image : wordpress
     container_name: wordpress 
     volumes:
-        - wordpress:/var/www/html/wordpress.
+        - wordpress:/var/www/html/wordpress
     env_file:
         - .env
     networks:
@@ -52,7 +34,6 @@ services:
     environment:
         - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
         - MYSQL_DATABASE=${MYSQL_DATABASE}
-          MYSQL_USER=${MYSQL_USER}
         - MYSQL_PASSWORD=${MYSQL_PASSWORD}
         - WORDPRESS_DB_HOST=${WORDPRESS_DB_HOST}
         - WORDPRESS_DB_NAME=${WORDPRESS_DB_NAME}
@@ -63,6 +44,23 @@ services:
     restart: always
     init : true
 
+
+  nginx:
+    build:
+      context:  ./requirements/nginx/
+      dockerfile: Dockerfile
+    image: nginx
+    container_name: nginx
+    networks:
+        - wordpress
+    ports:
+      - 443:443
+    volumes:
+      - wordpress:/var/www/html/wordpress
+    restart: always
+    init : true
+    
+  
 
 volumes:
   wordpress:
