@@ -1,11 +1,10 @@
 FROM alpine:3.16.4
 
-
 RUN apk update; \
       apk add nginx openssl; \
       mkdir -p /etc/nginx/ssl ;
 
-EXPOSE 8080
+#EXPOSE 8080
 
 COPY ./conf/default.conf /etc/nginx/http.d/default.conf
 

@@ -1,32 +1,71 @@
 version: '2.2'
 
 services: 
+
   nginx:
     build:
       context:  ./requirements/nginx/
       dockerfile: Dockerfile
     image: nginx
     container_name: nginx
+    networks:
+        - wordpress
     ports:
       - 80:80
+    volumes:
+      - wordpress:/var/www/html/wordpress.
+    restart: always
+    init : true
+    
   mariadb :
-    build:
-      context:  requirements/mariadb
-      dockerfile: Dockerfile
+    build: ./requirements/mariadb
     image : mariadb
     container_name: mariadb
-  wordpress :
+    restart: always
+    volumes:
+        - wordpress:/var/www/html/wordpress.
+    env_file:
+        - .env
+    networks:
+        - wordpress
+    environment:
+        - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+        - MYSQL_DATABASE=${MYSQL_DATABASE}
+          MYSQL_USER=${MYSQL_USER}
+        - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    init : true
+
+
+  wordpress:
     build:
-      context:  requirements/wordpress
-      dockerfile: Dockerfile
+      context:  ./requirements/wordpress
     image : wordpress
     container_name: wordpress 
+    volumes:
+        - wordpress:/var/www/html/wordpress.
+    env_file:
+        - .env
+    networks:
+        - wordpress
+    depends_on:
+        - mariadb
+    environment:
+        - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+        - MYSQL_DATABASE=${MYSQL_DATABASE}
+          MYSQL_USER=${MYSQL_USER}
+        - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+        - WORDPRESS_DB_HOST=${WORDPRESS_DB_HOST}
+        - WORDPRESS_DB_NAME=${WORDPRESS_DB_NAME}
+        - WORDPRESS_DB_PASSWORD=${WORDPRESS_DB_PASSWORD}
+        - WORDPRESS_TABLE_PREFIX=${WORDPRESS_TABLE_PREFIX}
+    ports:
+        - 9000:9000
+    restart: always
+    init : true
 
 
+volumes:
+  wordpress:
 
-
-
-
-    #    volumes:
-        #      - wordpress: /var/www/html/wordpress
-
+networks:
+  wordpress:
