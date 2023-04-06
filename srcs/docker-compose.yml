@@ -7,16 +7,16 @@ services:
     container_name: mariadb
     restart: always
     volumes:
-        - wordpress:/var/www/html/wordpress
+        - mariadb:/var/lib/mysql
+        #           - wordpress:/var/www/html/wordpress
     env_file:
         - .env
     networks:
         - wordpress
     environment:
+        - MYSQL_DATABASE=wordpress
         - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-        - MYSQL_DATABASE=${MYSQL_DATABASE}
-        - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-    init : true
+          #        - MYSQL_PASSWORD=${MYSQL_PASSWORD}
 
   wordpress:
     build:
@@ -32,20 +32,21 @@ services:
     depends_on:
         - mariadb
     environment:
-        - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-        - MYSQL_DATABASE=${MYSQL_DATABASE}
-        - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-        - WORDPRESS_DB_HOST=${WORDPRESS_DB_HOST}
-        - WORDPRESS_DB_NAME=${WORDPRESS_DB_NAME}
-        - WORDPRESS_DB_PASSWORD=${WORDPRESS_DB_PASSWORD}
-        - WORDPRESS_TABLE_PREFIX=${WORDPRESS_TABLE_PREFIX}
+        - WORDPRESS_DB_HOST=mariadb:3306
+        - WORDPRESS_DB_NAME=wordpress
+        - WORDPRESS_DB_USER=$MYSQL_USER
+        - WORDPRESS_DB_PASSWORD=$MYSQL_USER
+          #        - WORDPRESS_TABLE_PREFIX=${WORDPRESS_TABLE_PREFIX}
+          #        - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+          #        - MYSQL_DATABASE=${MYSQL_DATABASE}
+          #        - MYSQL_PASSWORD=${MYSQL_PASSWORD}
     ports:
         - 9000:9000
     restart: always
-    init : true
-
 
   nginx:
+    depends_on:
+        - wordpress
     build:
       context:  ./requirements/nginx/
       dockerfile: Dockerfile
@@ -58,7 +59,6 @@ services:
     volumes:
       - wordpress:/var/www/html/wordpress
     restart: always
-    init : true
     
   
 
