@@ -12,7 +12,6 @@ COPY . .
 
 RUN sh tools/key_gen.sh 
 
-#COPY tools/cert.pem tools/prv.key /etc/nginx/ssl/
 
 COPY ./tools/*.html  /usr/share/nginx/html/
 

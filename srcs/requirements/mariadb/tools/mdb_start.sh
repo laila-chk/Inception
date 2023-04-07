@@ -1,5 +1,9 @@
-systemctl start mariadb
+#!/bin/bash
 
-mariadb -u root -e "CREATE DATABASE	lchokri; CREATE USER lchokri@'%' IDENTIFIED BY 'password'; REQUIRE NOT REGEXP 'admin|Admin|administrator|Administrator';GRANT ALL PRIVILEGES ON <db name> TO <username>'@'%'; FLUSH PRIVILEGES; ALTER USER 'root'@'localhost' IDENTIFIED BY 'newpassword'; FLUSH PRIVILEGES;"
+service mysql start
+mysql -u root -e "CREATE DATABASE mdb ; CREATE USER 'lchokri'@'%' IDENTIFIED BY 'psswd' ; GRANT ALL PRIVILEGES ON mdb.* TO 'lchokri'@'%'; FLUSH PRIVILEGES;"
 
-exec $@
+#service mysql stop
+
+#exec bash
+exec mysql
