@@ -5,6 +5,7 @@ services:
     build:
       context: ./requirements/mariadb
       dockerfile : Dockerfile
+    image: mariadb
     container_name: mariadb
     restart: always
     volumes:
@@ -18,9 +19,6 @@ services:
         - MYSQL_HOST=localhost
         - MYSQL_DATABASE=wordpress
         - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-          #        - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-    ports:
-        - 3306:3306
 
   wordpress:
     build:
@@ -35,16 +33,11 @@ services:
     depends_on:
         - mariadb
     environment:
-        - WORDPRESS_DB_HOST=mariadb:3306
         - WORDPRESS_DB_NAME=wordpress
         - WORDPRESS_DB_USER=$MYSQL_USER
-        - WORDPRESS_DB_PASSWORD=$MYSQL_USER
-          #        - WORDPRESS_TABLE_PREFIX=${WORDPRESS_TABLE_PREFIX}
-          #        - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-          #        - MYSQL_DATABASE=${MYSQL_DATABASE}
-          #        - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-    ports:
-         - 9000:9000
+        - WORDPRESS_DB_PASSWORD=$MYSQL_PASSWORD
+        - WORDPRESS_DB_HOST=mariadb:3306
+        - WORDPRESS_TABLE_PREFIX=wp_
     restart: always
 
   nginx:
