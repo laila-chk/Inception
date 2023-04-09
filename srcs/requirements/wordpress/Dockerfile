@@ -18,7 +18,7 @@ RUN chmod +x wp-cli_install.sh
 
 RUN mkdir /run/php/
 
-ENTRYPOINT ["sh", "wp-cli_install.sh"]
+CMD ["sh", "wp-cli_install.sh"]
 
-CMD ["php-fpm7.3", "-R", "-F"]
+# CMD []
 

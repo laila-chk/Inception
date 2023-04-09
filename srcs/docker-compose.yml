@@ -1,25 +1,6 @@
 version: '3'
 
 services: 
-  mariadb :
-    build:
-      context: ./requirements/mariadb
-      dockerfile : Dockerfile
-    image: mariadb
-    container_name: mariadb
-    restart: always
-    volumes:
-        - mariadb:/var/lib/mysql
-        - wordpress:/var/www/html/wordpress
-    env_file:
-        - .env
-    networks:
-        - wordpress
-    environment:
-        - MYSQL_HOST=localhost
-        - MYSQL_DATABASE=wordpress
-        - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-
   wordpress:
     build:
       context: ./requirements/wordpress
@@ -33,12 +14,34 @@ services:
     depends_on:
         - mariadb
     environment:
-        - WORDPRESS_DB_NAME=wordpress
+        - MYSQL_DATABASE=wordpress
         - WORDPRESS_DB_USER=$MYSQL_USER
         - WORDPRESS_DB_PASSWORD=$MYSQL_PASSWORD
-        - WORDPRESS_DB_HOST=mariadb:3306
+        - WORDPRESS_DB_HOST=mariadb
         - WORDPRESS_TABLE_PREFIX=wp_
+        - WP_EMAIL=laila@student.ma
+        - DOMAIN=localhost
+        - MYSQL_HOST=mariadb
+        - WW_USER=laila
+        - WP_PW=elcie
     restart: always
+
+  mariadb:
+    build:
+      context: ./requirements/mariadb
+      dockerfile : Dockerfile
+    container_name: mariadb
+    restart: always
+    volumes:
+        - mariadb:/var/lib/mysql
+    env_file:
+        - .env
+    networks:
+        - wordpress
+    environment:
+        - MYSQL_HOST=localhost
+        - MYSQL_DATABASE=wordpress
+        - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
 
   nginx:
     depends_on:
