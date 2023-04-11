@@ -4,6 +4,7 @@ services:
   wordpress:
     build:
       context: ./requirements/wordpress
+      dockerfile: Dockerfile
     image: wordpress:local
     container_name: wordpress 
     volumes:

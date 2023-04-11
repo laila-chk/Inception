@@ -12,6 +12,8 @@ RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli
 
 COPY tools/* .
 
+COPY conf/* /var/www/html/wordpress
+
 #RUN mv index.php /var/www/html
 
 RUN chmod +x wp-cli_install.sh
@@ -19,6 +21,3 @@ RUN chmod +x wp-cli_install.sh
 RUN mkdir /run/php/
 
 CMD ["sh", "wp-cli_install.sh"]
-
-# CMD []
-
