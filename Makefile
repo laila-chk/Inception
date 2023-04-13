@@ -1,11 +1,11 @@
 build:
-	docker compose -f srcs/docker-compose.yml up --build
+	docker-compose -f srcs/docker-compose.yml up --build
 
 up:
-	docker compose -f srcs/docker-compose.yml up
+	docker-compose -f srcs/docker-compose.yml up
 	
 down:
-	docker compose -f srcs/docker-compose.yml down 
+	docker-compose -f srcs/docker-compose.yml down 
 
 clean:
 	docker rmi -f $$(docker images -aq)	
@@ -19,4 +19,8 @@ rm_vols:
 cclean:
 	docker system prune -af
 
-super_clean: down cclean  clean fclean rm_vols 
+super_clean:
+	docker rm -f $(docker ps -qa);
+	docker rmi -f $(docker images -qa);
+	docker volume rm $(docker volume ls -q);
+	docker network rm $(docker network ls -q) 2>/dev/null
