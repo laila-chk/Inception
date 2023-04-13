@@ -9,5 +9,4 @@ mysql <<< "CREATE DATABASE IF NOT EXISTS $MYSQL_DATABASE ; CREATE USER IF NOT EX
 
 service mysql stop
 
-#exec bash
 mysqld --bind-address=0.0.0.0
