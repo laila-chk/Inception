@@ -8,13 +8,14 @@ down:
 	@docker-compose -f srcs/docker-compose.yml down 
 
 rmi:
+	ifneq ($(imgs),)
 	@docker rmi -f $$(docker images -aq)	
 
 rm:
 	@docker rm -f $$(docker ps -aq)	
 	
 rm_vols:
-	@docker volume rm $$(docker volume ls -q)
+	@docker volume rm -f $$(docker volume ls -q)
 
 cclean:
 	@docker system prune -af
